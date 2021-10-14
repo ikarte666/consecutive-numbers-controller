@@ -10,14 +10,20 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:consecutive-number-controller.helloWorld"
+		"onCommand:consecutive-number-controller.addConsecutiveNumbers"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "consecutive-number-controller.helloWorld",
-				"title": "Hello World"
+				"command": "consecutive-number-controller.addConsecutiveNumbers",
+				"title": "Hello"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "consecutive-number-controller.addConsecutiveNumbers",
+				"key": "ctrl+alt+a"
 			}
 		]
 	},

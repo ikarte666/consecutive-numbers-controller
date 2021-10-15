@@ -22,11 +22,12 @@ function activate(context) {
         "consecutive-number-controller.addConsecutiveNumbers", // 이게 commandId
         function () {
             const currentTextEditor = vscode.window.activeTextEditor;
+            const currentTextDocument = currentTextEditor.document;
             const selections = currentTextEditor.selections;
 
             if (selections.length === 1) {
                 vscode.window.showInformationMessage(
-                    `line : ${selections[0].active.line} char : ${selections[0].active.character}`,
+                    `${currentTextDocument.lineAt(selections[0].active).text}`,
                 );
             } else {
                 selections.map((currentSelection, idx) => {

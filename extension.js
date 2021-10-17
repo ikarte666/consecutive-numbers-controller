@@ -6,14 +6,15 @@ const vscode = require("vscode");
 // 등록된 커맨드 실행 시 익스텐션 실행
 
 /**
- * 이건 그냥 매개변수 타입 정의 (프로젝트 생성할 때 ts로 안해서 그런듯)
   @param {vscode.ExtensionContext} context
- **/
+**/
 function activate(context) {
-    // console.log로 콘솔창을 통해 오류나 정보 체크 가능, 익스텐션 활성화 시 1회만 동작
-    console.log(
-        'Congratulations, your extension "consecutive-number-controller" is now active!',
-    );
+    const logChannel = vscode.window.createOutputChannel("debug");
+
+    function log(msg) {
+        logChannel.appendLine(msg);
+        logChannel.show();
+    } // 로그용 함수
 
     // 커맨드는 package.json 파일에 정의되어야 함
     // registerCommand를 통해 커맨드의 실행을 등록
@@ -21,18 +22,40 @@ function activate(context) {
     const addConsecutiveNumbers = vscode.commands.registerCommand(
         "consecutive-number-controller.addConsecutiveNumbers", // 이게 commandId
         function () {
-            const currentTextEditor = vscode.window.activeTextEditor;
-            const currentTextDocument = currentTextEditor.document;
+            const currentTextEditor = vscode.window.activeTextEditor; // 활성화된 에디터
+            if (!currentTextEditor) {
+                return;
+            }
+            const currentTextDocument = currentTextEditor.document; // 현재 편집중인 문서
             const selections = currentTextEditor.selections;
 
+            const charArr = [];
+
             if (selections.length === 1) {
-                vscode.window.showInformationMessage(
-                    `${currentTextDocument.lineAt(selections[0].active).text}`,
+                const cursorRange = currentTextDocument.lineAt(
+                    selections[0].active,
+                ).range; // Range 리턴
+                const cursorPos = cursorRange.end;
+                const cursorLine = cursorRange.end.line;
+                const cursorChar = cursorRange.end.character;
+                const lastCharPos = new vscode.Position(
+                    cursorLine,
+                    cursorChar - 1,
                 );
+                const lastCharRange = new vscode.Range(lastCharPos, cursorPos);
+                const lastChar = currentTextDocument.getText(lastCharRange);
+
+                currentTextEditor.edit((editBuilder) => {
+                    editBuilder.insert(cursorPos, "hihi");
+                    return;
+                });
             } else {
                 selections.map((currentSelection, idx) => {
                     vscode.window.showInformationMessage(
-                        `line : ${currentSelection.active.line} char : ${currentSelection.active.character} idx : ${idx}`,
+                        `${
+                            currentTextDocument.lineAt(currentSelection.active)
+                                .text[-1]
+                        }`,
                     );
                     return;
                 });

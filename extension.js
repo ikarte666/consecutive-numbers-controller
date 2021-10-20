@@ -34,7 +34,6 @@ function activate(context) {
             }
             const currentTextDocument = currentTextEditor.document; // 현재 편집중인 문서
             const selections = currentTextEditor.selections;
-
             const tearedSelections = [];
 
             let isContainChar = false;
@@ -46,6 +45,13 @@ function activate(context) {
                 const cursorPos = cursorRange.end;
                 const cursorLine = cursorRange.end.line;
                 const cursorChar = cursorRange.end.character;
+                if (cursorChar === 0) {
+                    currentTextEditor.edit((editBuilder) => {
+                        editBuilder.insert(cursorPos, String(1));
+                        return;
+                    });
+                    return;
+                }
                 const cursorString = currentTextDocument.getText(cursorRange);
 
                 const lastCharPos = new vscode.Position(
@@ -87,6 +93,24 @@ function activate(context) {
                     const cursorPos = cursorRange.end;
                     const cursorLine = cursorRange.end.line;
                     const cursorChar = cursorRange.end.character;
+                    let isEmpty = false;
+
+                    if (cursorChar === 0) {
+                        isEmpty = true;
+                        const selectionObj = {
+                            cursorRange,
+                            cursorPos,
+                            cursorLine,
+                            cursorChar,
+                            cursorString: NaN,
+                            lastCharPos: NaN,
+                            lastCharRange: NaN,
+                            lastChar: NaN,
+                            isEmpty,
+                        };
+                        tearedSelections.push(selectionObj);
+                        return;
+                    }
                     const cursorString =
                         currentTextDocument.getText(cursorRange);
 
@@ -109,18 +133,19 @@ function activate(context) {
                         lastCharPos,
                         lastCharRange,
                         lastChar,
+                        isEmpty,
                     };
                     tearedSelections.push(selectionObj);
                     return;
-                }); // tearedSelections에 각각 selection을 분해하여 obj로 만들어 push
+                });
 
                 const sortedSelections = tearedSelections.sort((a, b) => {
                     return a.cursorLine - b.cursorLine;
-                }); // line number 오름차순으로 정렬
+                });
 
                 for (let i in sortedSelections) {
                     sortedSelections[i].idx = i;
-                } // 오름차순으로 정렬한대로 idx를 부여
+                } // 정렬한대로 idx를 부여
 
                 sortedSelections.every((selection) => {
                     if (isNaN(Number(selection.lastChar))) {
@@ -167,7 +192,6 @@ function activate(context) {
     context.subscriptions.push(addConsecutiveNumbers);
 }
 
-// 익스텐션이 비활성화 되면 얘가 동작
 function deactivate() {}
 
 module.exports = {

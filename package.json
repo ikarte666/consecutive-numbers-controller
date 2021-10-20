@@ -1,8 +1,10 @@
 {
 	"name": "consecutive-number-controller",
+	"publisher": "rondo",
 	"displayName": "consecutive number controller",
-	"description": "Drag lines, and input or plus consecutive numbers. As you will.",
-	"version": "0.0.1",
+	"repository": "https://github.com/ikarte666/consecutive-numbers-controller",
+	"description": "Select lines, and input or plus consecutive numbers. As you will.",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.59.0"
 	},

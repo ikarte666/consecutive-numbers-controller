@@ -1,7 +1,7 @@
 {
 	"name": "consecutive-number-controller",
 	"displayName": "consecutive number controller",
-	"description": "Drag lines, and input consecutive numbers. As you will.",
+	"description": "Drag lines, and input or plus consecutive numbers. As you will.",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.59.0"
